@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Unit Test with QUnit - Sample</title>
+    <link rel="stylesheet" href="../lib/qunit/qunit-1.10.0.css">
+    <script type="text/javascript" src="../lib/jquery/jquery-1.8.2.js"></script>
+    <script type="text/javascript" src="../lib/qunit/qunit-1.10.0.js"></script>
+    <script type="text/javascript" src="../lib/qunit/qunit-config.js"></script>
+    <script type="text/javascript" src="../src/sample.js"></script>
+    <script type="text/javascript">
+        var testwin = function(name, fn) {
+            testwin[name] = load_offset_fixture(name);
+            var interval = setInterval(function() {
+                if (testwin[name] && testwin[name].$ && testwin[name].jQuery.isReady) {
+                    clearInterval(interval);
+                    test(name, fn);
+                } 
+            }, 0);
+        
+            function load_offset_fixture(name) {
+                var win = window.open( "../src_mock/" + name + ".html?num"+parseInt(Math.random()*1000), name, 'left=0,top=0,width=500,height=500,toolbar=1,resizable=0' );
+                if ( !win ) { 
+                    alert("Please disable your popup blocker for the offset test suite");
+                    throw "Please disable your popup blocker for the offset test suite";
+                }
+                return win;
+            }
+        };
+
+        jQuery(document).ready(function() {
+            test("QUnit サンプルテストケース", function () {
+                expect(1);
+                equal(sample(1, 1), 2, "1 + 1 = 2");
+            });
+            
+            testwin("submit", function() {
+                var $w = testwin["submit"].$;
+                $w("#source_form").submit();
+                var $n = testwin["submit"].$;
+                equal($n("#result").text(), "Success.");
+                //testwin["submit"].close();
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="qunit">Unit Test with QUnit - Sample</div>
+    <div id="qunit-fixture">test markup</div>
+    <div id="main">
+    </div>
+</body>
+</html>
